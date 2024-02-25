@@ -6,19 +6,23 @@ from ..items import QuotetutItem
 class QuoteSpider(scrapy.Spider):
     name = 'quotes'
     start_urls = [
-        'https://quotes.toscrape.com'
+        'https://quotes.toscrape.com/login'
     ]
 
     def parse(self, response):
-        # token = response.css('form input::attr(value)').extract_first()
-        # return FormRequest.from_response(response, formdata = {
-        #     'csrf_token': token,
-        #     'username': 'hello@gmail.com',
-        #     'password': '123456'
-        # }, callback=self.start_scraping)
+        token = response.css('form input::attr(value)').extract_first()
+        return FormRequest.from_response(response, formdata = {
+            'csrf_token': token,
+            'username': 'hello@gmail.com',
+            'password': '123456'
+        }, callback=self.start_scraping)
 
-        items = QuotetutItem()
+        
     
+    def start_scraping(self, response):
+        open_in_browser(response)
+        items = QuotetutItem()
+        
         all_div_quotes = response.css("div.quote")
         for quotes in all_div_quotes:
             title = quotes.css("span.text::text").extract()
@@ -30,14 +34,10 @@ class QuoteSpider(scrapy.Spider):
             items['tags'] = tags
             yield items
 
-            next_page = response.css('li.next a::attr(href)').get()
+            # next_page = response.css('li.next a::attr(href)').get()
 
-            if next_page is not None:
-                yield response.follow(next_page, callback=self.parse)
-    
-    def start_scraping(self, response):
-        pass
-        # open_in_browser(response)
+            # if next_page is not None:
+            #     yield response.follow(next_page, callback=self.start_scraping)
         
 
         
