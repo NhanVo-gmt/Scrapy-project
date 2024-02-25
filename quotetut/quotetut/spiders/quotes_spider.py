@@ -21,14 +21,19 @@ class QuoteSpider(scrapy.Spider):
     
         all_div_quotes = response.css("div.quote")
         for quotes in all_div_quotes:
-            title = quotes.css("span.text::text").extract_first()
-            author = quotes.css("small.author::text").extract_first()
-            tags = quotes.css("a.tag::text").extract_first()
+            title = quotes.css("span.text::text").extract()
+            author = quotes.css("small.author::text").extract()
+            tags = quotes.css("a.tag::text").extract()
 
             items['title'] = title
             items['author'] = author
             items['tags'] = tags
             yield items
+
+            next_page = response.css('li.next a::attr(href)').get()
+
+            if next_page is not None:
+                yield response.follow(next_page, callback=self.parse)
     
     def start_scraping(self, response):
         pass
@@ -37,7 +42,4 @@ class QuoteSpider(scrapy.Spider):
 
         
 
-        # next_page = response.css('li.next a::attr(href)').get()
-
-        # if next_page is not None:
-        #     yield response.follow(next_page, callback=self.start_scraping)
+        
