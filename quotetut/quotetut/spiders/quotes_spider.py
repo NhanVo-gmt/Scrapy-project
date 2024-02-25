@@ -16,6 +16,8 @@ class QuoteSpider(scrapy.Spider):
         #     'username': 'hello@gmail.com',
         #     'password': '123456'
         # }, callback=self.start_scraping)
+
+        items = QuotetutItem()
     
         all_div_quotes = response.css("div.quote")
         for quotes in all_div_quotes:
@@ -23,16 +25,15 @@ class QuoteSpider(scrapy.Spider):
             author = quotes.css("small.author::text").extract_first()
             tags = quotes.css("a.tag::text").extract_first()
 
-            # items['title'] = title
-            # items['author'] = author
-            # items['tags'] = tags
-            print(title)
-            yield title
+            items['title'] = title
+            items['author'] = author
+            items['tags'] = tags
+            yield items
     
     def start_scraping(self, response):
         pass
         # open_in_browser(response)
-        # items = QuotetutItem()
+        
 
         
 
