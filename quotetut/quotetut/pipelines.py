@@ -16,13 +16,13 @@ class QuotetutPipeline:
         self.create_table()
 
     def create_connection(self):
-        # self.conn = sqlite3.connect("myquotes.db")
-        self.conn = mysql.connector.connect(
-            host = 'localhost',
-            user = 'root',
-            password = '123456',
-            database = 'quotes'
-        )
+        self.conn = sqlite3.connect("myquotes.db")
+        # self.conn = mysql.connector.connect(
+        #     host = 'localhost',
+        #     user = 'root',
+        #     password = '123456',
+        #     database = 'quotes'
+        # )
 
         self.curr = self.conn.cursor()
 
@@ -41,8 +41,8 @@ class QuotetutPipeline:
     def store_db(self, item):
         print("Pipeline " + item['title'][0])
 
-        # self.curr.execute("""insert into quotes_tb values (?, ?, ?)""", (
-        self.curr.execute("""insert into quotes_tb values (%s, %s, %s)""", (
+        self.curr.execute("""insert into quotes_tb values (?, ?, ?)""", (
+        # self.curr.execute("""insert into quotes_tb values (%s, %s, %s)""", (
             item['title'][0],
             item['author'][0],
             item['tags'][0]
